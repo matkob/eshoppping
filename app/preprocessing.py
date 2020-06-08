@@ -23,8 +23,22 @@ def encode_multi_hot(df):
 
 def normalize_numeric(df, mean, std):
     numeric = df.select_dtypes(include=['int64', 'float64']).columns
-    scaled_numeric = (df[numeric] - mean) / std
-    scaled = df.drop(numeric, axis=1)
-    return pd.concat([scaled, scaled_numeric], axis=1).reset_index(drop=True)
+    for col in numeric:
+        df[col] = (df[col] - mean[col]) / std[col]
+    return df
+
+
+def one_hot_user(df):
+    encoded = pd.concat([df.drop('user_id', axis=1), pd.get_dummies(df.user_id)], axis=1)
+    encoded.columns = [str(c) for c in encoded.columns]
+    return encoded
+
+
+def best_features(df, features):
+    return df[features]
+
+
+def fix_dimensions(df, features):
+    return df.assign(**{str(c): False for c in features if c not in set(df.columns)})
 
 

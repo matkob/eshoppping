@@ -14,10 +14,13 @@ class ModelB:
         self.std = self.data.loc['std']
 
     def predict(self, entries: pd.DataFrame):
-        entries['will_make_purchase'] = self.model.predict(self.preprocess(entries))
+        preprocessed = self.preprocess(entries)
+        entries['will_make_purchase'] = self.model.predict(preprocessed)
         return entries
 
     def preprocess(self, entries: pd.DataFrame):
         preprocessed = pre.encode_multi_hot(entries)
+        preprocessed = pre.one_hot_user(preprocessed)
         preprocessed = pre.normalize_numeric(preprocessed, self.mean, self.std)
-        return preprocessed[self.features]
+        preprocessed = pre.fix_dimensions(preprocessed, self.features)
+        return pre.best_features(preprocessed, self.features)
