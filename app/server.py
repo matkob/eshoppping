@@ -15,7 +15,7 @@ def get_prediction():
 
 
 if __name__ == '__main__':
-    model_list = [('B', '../data/model_b')]
+    model_list = [('B', '../data/model_b'), ('A', '../data/model_a')]
     client.initialize(3)
     models.initialize(model_list, 3)
     api.run(port=8080)

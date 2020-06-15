@@ -14,6 +14,7 @@ y_column = 'made_purchase'
 def send_prediction_request():
     random_entries = features.sample(n=random.randint(1, 10))
     x_entries = random_entries.drop(y_column, axis=1)
+    x_entries['session_id'] = range(1, len(x_entries)+1)
     resp = requests.post('http://localhost:8080/prediction', data=base64.b64encode(pickle.dumps(x_entries)))
     prediction = pickle.loads(base64.b64decode(resp.content))
     prediction['made_purchase'] = random_entries.made_purchase
@@ -26,3 +27,8 @@ def initialize(request_interval_sec):
     scheduler.add_job(func=send_prediction_request, trigger='interval', seconds=request_interval_sec)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
+
+
+if __name__ == '__main__':
+    print('sending single prediction request')
+    send_prediction_request()
