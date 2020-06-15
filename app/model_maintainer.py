@@ -34,4 +34,4 @@ def make_prediction(entries: pd.DataFrame):
     return pd.concat([results_A, results_B])
 
 def split_entries_to_AB(entries: pd.DataFrame):
-    return entries.loc[entries['session_id'] % 2 == 0], entries.loc[entries['session_id'] % 2 == 1]
+    return entries.loc[entries['user_id'] % 2 == 0], entries.loc[entries['user_id'] % 2 == 1]
